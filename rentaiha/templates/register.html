@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IHA</title>
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+<body>
+    
+    <div class="login-box">
+        <h2>Kayıt Ol</h2>
+        {% csrf_token %}
+        <form class="form" action="" method="POST">
+            <div class="user-box">
+                <input type="text" name="f_name" required="">
+                <label>Ad</label>
+              </div>
+              <div class="user-box">
+                <input type="text" name="s_name" required="">
+                <label>Soyad</label>
+              </div>
+            <div class="user-box">
+                <input type="text" name="username" required="">
+                <label>Kullanıcı Adı</label>
+              </div>
+          <div class="user-box">
+            <input type="text" name="email" required="">
+            <label>Email</label>
+          </div>
+          <div class="user-box">
+            <input type="password" name="pass1" required="">
+            <label>Şifre</label>
+          </div>
+          <button type="submit">KAYIT OL</button>
+        
+          <a href="/login">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Kayıt Ol
+          </a>
+        </form>
+      </div>
+</body>
+</html>
+
+

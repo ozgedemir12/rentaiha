@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RENT IHA</title>
+</head>
+<body>
+    <form method="POST" action="http://127.0.0.1:8000/" class="post-form m-4 " enctype="multipart/form-data" id="form">
+
+        <div>
+       
+
+     
+          <input class="form-control form-control-lg" id="upload" name="file" type="file" />
+
+
+          <input type="text" name="tag" id="tag" placeholder="marka gir">
+          <input type="text" name="tag" id="tag" placeholder="model gir">
+          <input type="text" name="tag" id="tag" placeholder="ağırlık gir">
+          <input type="text" name="tag" id="tag" placeholder="kategori gir">
+          <input style="margin-top:1rem;" onclick="multiUpload()" class="btn btn-primary" type="submit" value="Save">
+        </div>
+      </form>
+</body>
+</html>

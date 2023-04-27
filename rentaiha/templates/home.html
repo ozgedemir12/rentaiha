@@ -1,0 +1,255 @@
+<!doctype html>
+{% load static %}
+<html lang="zxx">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>pillloMart</title>
+    <link rel="icon" href="img/favicon.png">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- animate CSS -->
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <!-- owl carousel CSS -->
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <!-- font awesome CSS -->
+    <link rel="stylesheet" href="{% static 'css/all.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+    <!-- font awesome CSS -->
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    <!-- swiper CSS -->
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+    <!-- style CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% csrf_token %}
+    <section class="contact-section section_padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="contact-title">IHA Ekle</h2>
+                </div>
+                <div class="col-lg-8">
+                    <form class="form-contact contact_form" action="contact_process.php" method="post" id="contactForm"
+                        novalidate="novalidate">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <select class="form-select" aria-label="Default select example" id="category_list">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="form-select" aria-label="Default select example"
+                                    onchange="getModel(this)" id="brand_list">
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="form-select" aria-label="Default select example" id="model_list">
+
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <input class="form-control" name="weight" id="weight" type="text"
+                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Ağırlık Giriniz'"
+                                        placeholder='Ağırlık'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">Resim seçiniz...</label>
+                            <input required class="form-control" type="file" id="formFile">
+                        </div>
+                        <div class="form-group mt-3">
+                            <a onclick="addIha()" class="btn_3 button-contactForm">Ekle</a>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    </div>
+    </div>
+    </section>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+    <script>
+        //Html sayfasında category_list, brand_list , model_list ,file ve weight tanımla.
+        var category_list = document.getElementById('category_list')
+        var brand_list = document.getElementById('brand_list')
+        var model_list = document.getElementById('model_list')
+        var file = document.getElementById('formFile')
+        var weight = document.getElementById('weight')
+        //Girilen verileri toplamak için FormData oluşturur.
+        async function addIha() {
+        //Kullanıcı bir seçim yatıysa FormDataya ekler, Seçmemişse eklemez.
+            const formData = new FormData();
+            if (file.files[0]) {
+                formData.append("img", file.files[0])
+            }
+            formData.append("weight", (weight.value))
+            if (brand_list.value) {
+                formData.append("brand", parseInt(brand_list.value))
+            }
+            if (model_list.value) {
+                formData.append("model", parseInt(model_list.value))
+            }
+            if (category_list.value) {
+                formData.append("category", parseInt(category_list.value))
+            }
+
+
+            //Ekleme işlemi yapılır.
+            const response = await fetch(`http://127.0.0.1:8000/api/deneme/`, {
+                method: 'POST',
+                headers: {
+
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                },
+                body: formData
+
+            })
+            
+            if (response.status === 200) {
+                window.location.href = "http://127.0.0.1:8000/";
+            } else {
+                console.log("error");
+            }
+        }
+        
+
+
+
+        //GETCATEGORY
+        function getCategory() {
+            //URL Get isteği gönderir.
+            fetch('http://127.0.0.1:8000/api/category/', {
+                method: 'get',
+            })
+            //Yanıtı jsona çevirir.
+            //Yanıtı HTMLde category_list içine yerleştirir.
+            //Berlirli bir kategoriye tıkladığında filtreleme işlemi yapmasını sağlar.
+                .then(data => data.json())
+                .then(data => {
+                    for (var i of data) {
+                        category_list.innerHTML += `
+           <p><a onclick="filterByCategory('${i.name}')">${i.name}</a></p>` 
+           //Her bir kategori için option oluşturur.
+           //category_liste eklenir.
+                        var newOption = document.createElement('option');
+                        newOption.value = i.id
+                        newOption.text = i.name
+                        category_list.appendChild(newOption)
+                    }
+                })
+        }
+
+        //GETBRAND
+        function getBrand() {
+            //URL Get isteği gönderir.
+            fetch('http://127.0.0.1:8000/api/brand/', {
+                method: 'get',
+            })
+            //Yanıtı jsona çevirir.
+            //Yanıtı HTMLde category_list içine yerleştirir.
+            //Berlirli bir markaya tıkladığında filtreleme işlemi yapmasını sağlar.
+                .then(data => data.json())
+                .then(data => {
+                    for (var i of data) {
+                        brand_list.innerHTML += `
+           <p><a onclick="filterByBrand('${i.name}')">${i.name}</a></p>`
+           //Her bir marka için option oluşturur.
+           //brand_liste eklenir.
+                        var newOption = document.createElement('option');
+                        newOption.value = i.id
+                        newOption.text = i.name
+                        //Boş model gelememsi için newOPtion.Selected = true kullanılır.
+                        newOption.selected = true
+                        brand_list.appendChild(newOption)
+                    }
+                })
+        }
+
+        //GETMODEL
+        function getModel(id) {
+            //HTML içini temizler
+            model_list.innerHTML = ""
+            //brand seçtikten sonra modeli seçebilmek için brand.id alınır.
+            fetch(`http://127.0.0.1:8000/api/model?brand=${id.value}`, {
+                method: 'get',
+            })
+            //Yanıtı jsona çevirir.
+                .then(data => data.json())
+                .then(data => {
+                    for (var i of data) {
+                         //Her bir model için option oluşturur.
+                        //mdoel_liste eklenir.
+                        var newOption = document.createElement('option');
+                        newOption.value = i.id
+                        newOption.text = i.name
+                        model_list.appendChild(newOption)
+                    }
+                })
+        }
+        //Sayfa yüklendiğinde çalışması gereken func.
+        getBrand();
+        getCategory()
+    </script>
+
+
+
+
+    <script src="{% static 'js/jquery-1.12.1.min.js' %}"></script>
+    <!-- popper js -->
+
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <!-- bootstrap js -->
+
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <!-- easing js -->
+
+    <!--    <script src="{% static 'js/jquery.magnific-popup.js' %}"></script>-->
+    <!-- swiper js -->
+
+    <script src="{% static 'js/swiper.min.js' %}"></script>
+    <!-- swiper js -->
+
+    <script src="{% static 'js/mixitup.min.js' %}"></script>
+
+    <!-- particles js -->
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+
+    <script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+
+    <!-- slick js -->
+    <script src="{% static 'js/slick.min.js' %}"></script>
+
+    <script src="{% static 'js/jquery.counterup.min.js' %}"></script>
+
+    <script src="{% static 'js/waypoints.min.js' %}"></script>
+
+    <script src="{% static 'js/contact.js' %}"></script>
+
+    <script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+
+    <script src="{% static 'js/jquery.form.js' %}"></script>
+
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+
+    <script src="{% static 'js/mail-script.js' %}"></script>
+    <!-- custom js -->
+
+    <script src="{% static 'js/custom.js' %}"></script>
+</body>
+</html>
